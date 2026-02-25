@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-export default function UpdatePage() {
+export default function Update() {
   const { id } = useParams();
 
   // Initialize state with data from localStorage or an empty array
@@ -10,6 +10,7 @@ export default function UpdatePage() {
     return savedEvents ? JSON.parse(savedEvents) : [];
   });
 
+  // Find the specific event that the user wants to update
   const event = events.find(event => event.id === Number(id)); // Find the event in question
  
   const [title, setTitle] = useState("");
@@ -18,11 +19,14 @@ export default function UpdatePage() {
 
   let navigate = useNavigate();
 
-  // Optional: Sync state changes to localStorage
+  // Save events to webstorage/local storage
   useEffect(() => {
     localStorage.setItem("events", JSON.stringify(events));
   }, [events]);
 
+  // Update event title, date and description when 
+  // specific event is found. This will affect the
+  // values in the form. 
   useEffect(() => {
     if (event) {
       setTitle(event.title);
@@ -32,15 +36,17 @@ export default function UpdatePage() {
   }, [event]);
 
   
+  // When the user presses form update button, the specific event
+  // is updated.
   function updateHandler(e) {
     e.preventDefault();
     const updatedEvent = { id: Number(id), title: title, date: date, description: description };
-    // console.log(updatedEvent);
     setEvents(events.map((event) =>
       event.id === Number(id) ? updatedEvent : event
     )
   );
 
+    // After update, the user is redirected to the default page.
     navigate("/");
   }
 
@@ -67,3 +73,4 @@ export default function UpdatePage() {
     </form>
   );
 };
+

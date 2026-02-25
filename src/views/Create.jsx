@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function CreatePage() {
+export default function Create() {
   
-  // Initialize state with data from localStorage or an empty array
+  // Get the list of events from webstorage/local storage
+  // as a string an format it as a list of event objects.
   const [events, setEvents] = useState(() => {
     const savedEvents = localStorage.getItem("events");
     return savedEvents ? JSON.parse(savedEvents) : [];
@@ -15,12 +16,15 @@ export default function CreatePage() {
 
   let navigate = useNavigate();
 
-  // Optional: Sync state changes to localStorage
+  // Save events to webstorage/local storage as a string.
   useEffect(() => {
     localStorage.setItem("events", JSON.stringify(events));
   }, [events]);
 
 
+  // When the user press create button, I find the highest
+  // id-value in the list, thereafter I add 1 to that number
+  // and it becomes the id of the new event.
   function createHandler(e) {
     e.preventDefault();
     const highestId = events.length > 0 ? Math.max(...events.map(event => event.id)) : -1
@@ -48,3 +52,4 @@ export default function CreatePage() {
     </form>
   );
 };
+
